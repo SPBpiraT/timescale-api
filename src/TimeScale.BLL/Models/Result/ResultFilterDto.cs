@@ -1,7 +1,7 @@
 ﻿
-namespace TimeScale.WebApi.Models
+namespace TimeScale.BLL.Models
 {
-    public record FilterDto
+    public record ResultFilterDto
     {
         public string? FileName { get; init; }
         public DateTime? StartDate { get; init; }

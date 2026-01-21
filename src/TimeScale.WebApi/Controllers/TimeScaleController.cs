@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TimeScale.WebApi.Models;
+using TimeScale.BLL.Models;
 
 namespace TimeScale.WebApi.Controllers
 {
@@ -14,7 +14,7 @@ namespace TimeScale.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetFilteredResults([FromQuery] FilterDto filter)
+        public async Task<IActionResult> GetFilteredResults([FromQuery] ResultFilterDto filter)
         {
             return StatusCode(200);
         }
