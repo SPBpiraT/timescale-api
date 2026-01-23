@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TimeScale.BLL.Models;
+using TimeScale.Shared.Models;
 
 namespace TimeScale.WebApi.Controllers
 {

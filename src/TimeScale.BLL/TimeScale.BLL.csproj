@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TimeScale.Shared\TimeScale.Shared.csproj" />
     <ProjectReference Include="..\TimeScale.DAL\TimeScale.DAL.csproj" />
   </ItemGroup>
 

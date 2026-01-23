@@ -1,5 +1,6 @@
 ﻿using TimeScale.BLL.Models.Result;
 using TimeScale.BLL.Models.Value;
+using TimeScale.Shared.Models;
 
 namespace TimeScale.BLL.Interfaces
 {
