@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TimeScale.DAL\TimeScale.DAL.csproj" />
+    <ProjectReference Include="..\TimeScale.Shared\TimeScale.Shared.csproj" />
   </ItemGroup>
 
 </Project>
