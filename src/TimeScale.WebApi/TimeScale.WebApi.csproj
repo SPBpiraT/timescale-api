@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeScale.BLL\TimeScale.BLL.csproj" />
+    <ProjectReference Include="..\TimeScale.Shared\TimeScale.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
