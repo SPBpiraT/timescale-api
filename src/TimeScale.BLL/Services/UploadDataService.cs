@@ -11,11 +11,11 @@ using TimeScale.DAL.Interfaces;
 
 namespace TimeScale.BLL.Services
 {
-    internal class UploadDataService : IUploadDataService
+    public class UploadDataService : IUploadDataService
     {
         private readonly IAssessmentRepository _assessmentRepository;
         private readonly IValidator<ValueDto> _valueValidator;
-        private readonly ILogger _logger;
+        private readonly ILogger<UploadDataService> _logger;
 
         public UploadDataService(IAssessmentRepository assessmentRepository,
             IValidator<ValueDto> valueValidator,
@@ -50,8 +50,7 @@ namespace TimeScale.BLL.Services
                 var valuesList = new List<ValueEntity>();
                 foreach (var dto in valuesDtoList)
                 {
-                    var entity = dto.MapToEntity();
-                    valuesList.Add(entity);
+                    valuesList.Add(dto.MapToEntity());
                 }
 
                 var resultEntity = MapResults(fileName, valuesDtoList);
