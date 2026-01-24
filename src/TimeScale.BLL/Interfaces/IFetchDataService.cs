@@ -7,7 +7,7 @@ namespace TimeScale.BLL.Interfaces
 {
     public interface IFetchDataService
     {
-        Task<ServiceResponse<IEnumerable<ResultDto>>> GetFilteredResultsAsync(ResultFilterDto filter, CancellationToken cancellationToken);
-        Task<ServiceResponse<IEnumerable<ValueDto>>> GetLastValuesAsync(string fileName, CancellationToken cancellationToken);
+        Task<ServiceResponse<IReadOnlyList<ResultDto>>> GetFilteredResultsAsync(ResultFilterDto filter, CancellationToken cancellationToken);
+        Task<ServiceResponse<IReadOnlyList<ValueDto>>> GetLastValuesAsync(string fileName, CancellationToken cancellationToken);
     }
 }
