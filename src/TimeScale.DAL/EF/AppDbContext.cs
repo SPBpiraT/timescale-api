@@ -18,10 +18,10 @@ namespace TimeScale.DAL.EF
             base.OnModelCreating(builder);
         }
 
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-        {
-            configurationBuilder.Properties<DateTime>()
-                .HaveConversion<DateTimeToUtcConverter>();
-        }
+        //protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        //{
+        //    configurationBuilder.Properties<DateTime>()
+        //        .HaveConversion<DateTimeToUtcConverter>();
+        //}
     }
 }
