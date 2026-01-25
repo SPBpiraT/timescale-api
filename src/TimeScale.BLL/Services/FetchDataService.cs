@@ -27,6 +27,8 @@ namespace TimeScale.BLL.Services
             {
                 var resultList = await _assessmentRepository.GetFilteredResultsAsync(filter, cancellationToken);
 
+                if (!resultList.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
+
                 var resultDtoList = new List<ResultDto>();
                 foreach (var entity in resultList)
                 {
@@ -48,6 +50,8 @@ namespace TimeScale.BLL.Services
             try
             {
                 var lastValues = await _assessmentRepository.GetLastValuesAsync(fileName, cancellationToken);
+
+                if (!lastValues.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
 
                 var valuesDtoList = new List<ValueDto>();
                 foreach (var entity in lastValues)

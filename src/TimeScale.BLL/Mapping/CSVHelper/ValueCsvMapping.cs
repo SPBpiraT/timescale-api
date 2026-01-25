@@ -9,8 +9,7 @@ namespace TimeScale.BLL.Mapping.CSVHelper
         public ValueCsvMapping()
         {
             Map(m => m.Date)
-                .Name("Date")
-                //.TypeConverterOption.DateTimeStyles(DateTimeStyles.AdjustToUniversal)
+                .TypeConverterOption.DateTimeStyles(DateTimeStyles.AdjustToUniversal)
                 .TypeConverterOption.Format("yyyy-MM-ddTHH-mm-ss.ffffZ");
 
             Map(m => m.ExecutionTime);
