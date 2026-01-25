@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using TimeScale.DAL.Converters;
 using TimeScale.DAL.Entities;
 
 namespace TimeScale.DAL.EF
