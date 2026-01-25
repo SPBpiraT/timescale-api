@@ -22,14 +22,17 @@ namespace TimeScale.BLL.Mapping
 
         internal static ResultDto MapToDto(this ResultEntity resultEntity)
         {
-            return new(resultEntity.FileName,
-                resultEntity.DeltaTime,
-                resultEntity.FirstOperationDate,
-                resultEntity.AvgExecutionTime,
-                resultEntity.AvgValue,
-                resultEntity.MedianValue,
-                resultEntity.MaxValue,
-                resultEntity.MinValue);
+            return new()
+            {
+                FileName = resultEntity.FileName,
+                DeltaTime = resultEntity.DeltaTime,
+                FirstOperationDate = resultEntity.FirstOperationDate,
+                AvgExecutionTime = resultEntity.AvgExecutionTime,
+                AvgValue = resultEntity.AvgValue,
+                MedianValue = resultEntity.MedianValue,
+                MaxValue = resultEntity.MaxValue,
+                MinValue = resultEntity.MinValue
+            };
         }
     }
 }

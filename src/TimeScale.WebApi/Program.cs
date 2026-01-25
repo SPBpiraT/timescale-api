@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using TimeScale.BLL.Extensions;
 using TimeScale.DAL.EF;
 using TimeScale.DAL.Extensions;
@@ -17,6 +18,11 @@ builder.Services.AddApplicationValidators();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddContext(connectionString);
 builder.Services.AddRepositories();
+
+//builder.Services.Configure<ApiBehaviorOptions>(options =>
+//{
+//    options.SuppressMapClientErrors = true; // Не перезаписывать наши статусы
+//});
 
 var app = builder.Build();
 

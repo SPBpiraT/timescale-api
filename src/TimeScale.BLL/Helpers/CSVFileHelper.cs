@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using System.Globalization;
+using TimeScale.BLL.Mapping.CSVHelper;
 using TimeScale.BLL.Models.Value;
 
 namespace TimeScale.BLL.Helpers
@@ -31,6 +32,7 @@ namespace TimeScale.BLL.Helpers
             };
 
             using var csvReader = new CsvReader(streamReader, csvConfiguration);
+            csvReader.Context.RegisterClassMap<ValueCsvMapping>();
             var rowNumber = 0;
 
             await foreach (var valueDto in csvReader

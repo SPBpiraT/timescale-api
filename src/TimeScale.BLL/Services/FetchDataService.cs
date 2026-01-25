@@ -27,6 +27,8 @@ namespace TimeScale.BLL.Services
             {
                 var resultList = await _assessmentRepository.GetFilteredResultsAsync(filter, cancellationToken);
 
+                if (!resultList.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
+
                 var resultDtoList = new List<ResultDto>();
                 foreach (var entity in resultList)
                 {
@@ -38,7 +40,7 @@ namespace TimeScale.BLL.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to retrieve results.");
-                return new ServiceResponse<IReadOnlyList<ResultDto>>(false, 500, "Error. Could not fetch results.", new List<ResultDto>());
+                return new ServiceResponse<IReadOnlyList<ResultDto>>(false, 400, "Error. Could not fetch results.", new List<ResultDto>());
             }
         }
 
@@ -48,6 +50,8 @@ namespace TimeScale.BLL.Services
             try
             {
                 var lastValues = await _assessmentRepository.GetLastValuesAsync(fileName, cancellationToken);
+
+                if (!lastValues.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
 
                 var valuesDtoList = new List<ValueDto>();
                 foreach (var entity in lastValues)
@@ -61,7 +65,7 @@ namespace TimeScale.BLL.Services
             {
                 _logger.LogError(ex, "Failed to retrieve values.");
 
-                return new ServiceResponse<IReadOnlyList<ValueDto>>(false, 500, "Error. Could not fetch values.", new List<ValueDto>());
+                return new ServiceResponse<IReadOnlyList<ValueDto>>(false, 400, "Error. Could not fetch values.", new List<ValueDto>());
             }
         }
     }

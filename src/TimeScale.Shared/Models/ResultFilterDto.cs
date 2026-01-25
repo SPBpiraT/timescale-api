@@ -3,7 +3,7 @@
     public record ResultFilterDto
     {
         public string? FileName { get; init; }
-        public DateTime? StartDate { get; init; }
+        public DateTime? StartDate { get; init; } //TODO: Parse DateTime to UTC format
         public DateTime? EndDate { get; init; }
         public double? MinAvgValue { get; init; }
         public double? MaxAvgValue { get; init; }

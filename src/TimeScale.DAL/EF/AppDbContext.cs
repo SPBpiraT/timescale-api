@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using TimeScale.DAL.Converters;
 using TimeScale.DAL.Entities;
 
 namespace TimeScale.DAL.EF
@@ -16,12 +15,6 @@ namespace TimeScale.DAL.EF
         {
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
-        }
-
-        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-        {
-            configurationBuilder.Properties<DateTime>()
-                .HaveConversion<DateTimeToUtcConverter>();
         }
     }
 }

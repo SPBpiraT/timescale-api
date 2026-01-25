@@ -18,10 +18,13 @@ namespace TimeScale.BLL.Mapping
 
         internal static ValueDto MapToDto(this ValueEntity valueEntity)
         {
-            return new(valueEntity.FileName,
-                valueEntity.Date,
-                valueEntity.ExecutionTime,
-                valueEntity.Value);
+            return new()
+            {
+                FileName = valueEntity.FileName,
+                Date = valueEntity.Date,
+                ExecutionTime = valueEntity.ExecutionTime,
+                Value = valueEntity.Value
+            };
         }    
     }
 }
