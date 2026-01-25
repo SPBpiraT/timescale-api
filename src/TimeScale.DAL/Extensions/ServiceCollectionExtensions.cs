@@ -10,8 +10,7 @@ namespace TimeScale.DAL.Extensions
     {
         public static IServiceCollection AddContext(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString), ServiceLifetime.Transient, optionsLifetime: ServiceLifetime.Singleton);
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
             return services;
         }
