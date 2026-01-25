@@ -24,28 +24,84 @@ namespace TimeScale.WebApi.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Uploads data from CSV file
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// POST /api/TimeScale/UploadDataFromCsv
+        /// Content-Type: multipart/form-data
+        /// </remarks>
+        /// <param name="file">CSV file with data</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Operation result</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">Invalid CSV file</response>
         [HttpPost]
+        [RequestSizeLimit(10_485_760)]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ServiceResponse>> UploadDataFromCsv(IFormFile file, 
             CancellationToken cancellationToken)
         {
             var response = await _uploadDataService.LoadDataFromCSVAsync(file, cancellationToken);
-            return response;
+
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
 
+        /// <summary>
+        /// Gets filtered results
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// GET /api/TimeScale/GetFilteredResults?FileName=test.csv&StartDate=2024-01-01
+        /// </remarks>
+        /// <param name="filter">Filter parameters</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Filtered results</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">Invalid filter parameters</response>
         [HttpGet]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ServiceResponse<IReadOnlyList<ResultDto>>>> GetFilteredResults([FromQuery] ResultFilterDto filter,
             CancellationToken cancellationToken)
         {
             var response = await _fetchDataService.GetFilteredResultsAsync(filter, cancellationToken);
-            return response;
+
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
 
+        /// <summary>
+        /// Gets last values for a file
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// GET /api/TimeScale/GetLastValues?FileName=data.csv
+        /// </remarks>
+        /// <param name="fileName">File name</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Last values</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">Invalid file name</response>
         [HttpGet]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ServiceResponse<IReadOnlyList<ValueDto>>>> GetLastValues([FromQuery] string fileName,
             CancellationToken cancellationToken)
         {
             var response = await _fetchDataService.GetLastValuesAsync(fileName, cancellationToken);
-            return response;
+
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
     }
 }

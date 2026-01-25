@@ -65,7 +65,7 @@ namespace TimeScale.BLL.Services
             {
                 _logger.LogError(ex, "An error occurred while processing the CSV file.");
 
-                return new ServiceResponse(false, 500, "Error while processing the CSV file.");
+                return new ServiceResponse(false, 400, "Error while processing the CSV file.");
             }
         }
 
