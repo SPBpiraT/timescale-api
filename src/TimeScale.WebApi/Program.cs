@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using TimeScale.BLL.Extensions;
 using TimeScale.DAL.EF;
 using TimeScale.DAL.Extensions;
+using TimeScale.WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,11 +19,6 @@ builder.Services.AddApplicationValidators();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddContext(connectionString);
 builder.Services.AddRepositories();
-
-//builder.Services.Configure<ApiBehaviorOptions>(options =>
-//{
-//    options.SuppressMapClientErrors = true; // Не перезаписывать наши статусы
-//});
 
 var app = builder.Build();
 

@@ -15,6 +15,8 @@ namespace TimeScale.BLL.Mapping.CSVHelper
             Map(m => m.ExecutionTime);
 
             Map(m => m.Value);
+
+            Map(m => m.FileName).Ignore();
         }
     }
 }

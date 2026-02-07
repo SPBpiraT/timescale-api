@@ -5,7 +5,7 @@ namespace TimeScale.BLL.Interfaces
 {
     public interface IUploadDataService
     {
-        Task<ServiceResponse> LoadDataFromCSVAsync(IFormFile file, CancellationToken cancellationToken);
+        Task LoadDataFromCSVAsync(IFormFile file, CancellationToken cancellationToken);
     }
 }
 
