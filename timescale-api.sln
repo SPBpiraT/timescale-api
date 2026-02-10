@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeScale.DAL", "src\TimeSc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeScale.Shared", "src\TimeScale.Shared\TimeScale.Shared.csproj", "{C9056BF7-3AA8-4A42-95A6-E3BDC256D35C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1F96B498-7CCD-41E8-812E-18A7AFAD6758}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeScale.UnitTests", "tests\TimeScale.UnitTests\TimeScale.UnitTests.csproj", "{DC499DB9-F62A-4C76-A098-2FD48E4AB096}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{C9056BF7-3AA8-4A42-95A6-E3BDC256D35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9056BF7-3AA8-4A42-95A6-E3BDC256D35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9056BF7-3AA8-4A42-95A6-E3BDC256D35C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC499DB9-F62A-4C76-A098-2FD48E4AB096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC499DB9-F62A-4C76-A098-2FD48E4AB096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC499DB9-F62A-4C76-A098-2FD48E4AB096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC499DB9-F62A-4C76-A098-2FD48E4AB096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +52,6 @@ Global
 		{D2F0ADC6-7C4D-4670-90F7-E51F9AC7FE48} = {FBFDB5B3-E550-409C-A00E-5E546348CB55}
 		{38377025-19A4-4785-8CC0-6B722F74C615} = {FBFDB5B3-E550-409C-A00E-5E546348CB55}
 		{C9056BF7-3AA8-4A42-95A6-E3BDC256D35C} = {FBFDB5B3-E550-409C-A00E-5E546348CB55}
+		{DC499DB9-F62A-4C76-A098-2FD48E4AB096} = {1F96B498-7CCD-41E8-812E-18A7AFAD6758}
 	EndGlobalSection
 EndGlobal
