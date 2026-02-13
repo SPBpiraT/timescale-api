@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\TimeScale.BLL\TimeScale.BLL.csproj" />
     <ProjectReference Include="..\..\src\TimeScale.DAL\TimeScale.DAL.csproj" />
+    <ProjectReference Include="..\..\src\TimeScale.Shared\TimeScale.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
