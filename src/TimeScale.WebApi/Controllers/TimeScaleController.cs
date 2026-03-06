@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TimeScale.BLL.Exceptions;
 using TimeScale.BLL.Interfaces;
-using TimeScale.BLL.Models;
 using TimeScale.BLL.Models.Result;
 using TimeScale.BLL.Models.Value;
 using TimeScale.Shared.Models;
+using TimeScale.WebApi.Models;
 
 namespace TimeScale.WebApi.Controllers
 {
@@ -37,19 +38,63 @@ namespace TimeScale.WebApi.Controllers
         /// <returns>Operation result</returns>
         /// <response code="200">Success</response>
         /// <response code="400">Invalid CSV file</response>
+        /// <response code="413">File too large</response>
+        /// <response code="422">Data validation failed</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost]
-        [RequestSizeLimit(10_485_760)]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ServiceResponse>> UploadDataFromCsv(IFormFile file, 
+        [RequestFormLimits(MultipartBodyLengthLimit = 10_485_760)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status413PayloadTooLarge)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> UploadDataFromCsv(IFormFile file, 
             CancellationToken cancellationToken)
         {
-            var response = await _uploadDataService.LoadDataFromCSVAsync(file, cancellationToken);
+            var allowedExtensions = new[] { ".csv" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            return new ObjectResult(response)
+            if (!allowedExtensions.Contains(fileExtension))
             {
-                StatusCode = response.StatusCode
-            };
+                var response = new ApiResponse(false, 400, $"Unsupported file extension. Allowed extensions: {string.Join(",", allowedExtensions)}");
+                return BadRequest(response);
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                var response = new ApiResponse(false, 400, "File is missing or has no content.");
+                return BadRequest(response);
+            }
+
+            try
+            {
+                await _uploadDataService.LoadDataFromCSVAsync(file, cancellationToken);
+                var response = new ApiResponse(true, 200, "The data was uploaded successfully.");
+                return Ok(response);
+            }
+            catch (ServiceAppException)
+            {
+                var response = new ApiResponse(false, 400, "An error occurred while processing the CSV file.");
+                return BadRequest(response);
+            }
+            catch (ValidationAppException)
+            {
+                var response = new ApiResponse(false, 422, "CSV data validation error.");
+                return UnprocessableEntity(response);
+            }
+            catch (DatabaseOperationException)
+            {
+                var response = new ApiResponse(false, 500, "Service is temporarily unavailable. Please try again later.");
+                return StatusCode(500, response);
+            }
+            catch (Exception ex)
+            {
+                var details = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"An error occurred while processing the file. Details: {details}.");
+                var response = new ApiResponse(false, 400, "An error occurred while processing the file.");
+                return BadRequest(response);
+            }
         }
 
         /// <summary>
@@ -63,19 +108,31 @@ namespace TimeScale.WebApi.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Filtered results</returns>
         /// <response code="200">Success</response>
-        /// <response code="400">Invalid filter parameters</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpGet]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ServiceResponse<IReadOnlyList<ResultDto>>>> GetFilteredResults([FromQuery] ResultFilterDto filter,
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetFilteredResults([FromQuery] ResultFilterDto filter,
             CancellationToken cancellationToken)
         {
-            var response = await _fetchDataService.GetFilteredResultsAsync(filter, cancellationToken);
-
-            return new ObjectResult(response)
+            try
             {
-                StatusCode = response.StatusCode
-            };
+                var results = await _fetchDataService.GetFilteredResultsAsync(filter, cancellationToken);
+                var response = new ApiResponse<IReadOnlyList<ResultDto>>(true, 200, "Results retrieved successfully.", results);
+                return Ok(response);
+            }
+            catch (DatabaseOperationException)
+            {
+                var response = new ApiResponse(false, 500, "Service is temporarily unavailable. Please try again later.");
+                return StatusCode(500, response);
+            }
+            catch (Exception ex)
+            {
+                var details = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"Unexpected exception during [GetFilteredResultsAsync]. Details: {details}.");
+                var response = new ApiResponse(false, 500, "An unexpected error occurred while retrieving data. Please try again later.");
+                return StatusCode(500, response);
+            }
         }
 
         /// <summary>
@@ -89,19 +146,31 @@ namespace TimeScale.WebApi.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Last values</returns>
         /// <response code="200">Success</response>
-        /// <response code="400">Invalid file name</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpGet]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ServiceResponse<IReadOnlyList<ValueDto>>>> GetLastValues([FromQuery] string fileName,
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetLastValues([FromQuery] string fileName,
             CancellationToken cancellationToken)
         {
-            var response = await _fetchDataService.GetLastValuesAsync(fileName, cancellationToken);
-
-            return new ObjectResult(response)
+            try
             {
-                StatusCode = response.StatusCode
-            };
+                var values = await _fetchDataService.GetLastValuesAsync(fileName, cancellationToken);
+                var response = new ApiResponse<IReadOnlyList<ValueDto>>(true, 200, "Values retrieved successfully.", values);
+                return Ok(response);
+            }
+            catch (DatabaseOperationException)
+            {
+                var response = new ApiResponse(false, 500, "Service is temporarily unavailable. Please try again later.");
+                return StatusCode(500, response);
+            }
+            catch (Exception ex)
+            {
+                var details = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"Unexpected exception during [GetLastValuesAsync]. Details: {details}.");
+                var response = new ApiResponse(false, 500, "An unexpected error occurred while retrieving data. Please try again later.");
+                return StatusCode(500, response);
+            }
         }
     }
 }

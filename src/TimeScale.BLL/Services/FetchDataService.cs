@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Data.Common;
+using TimeScale.BLL.Exceptions;
 using TimeScale.BLL.Interfaces;
 using TimeScale.BLL.Mapping;
-using TimeScale.BLL.Models;
 using TimeScale.BLL.Models.Result;
 using TimeScale.BLL.Models.Value;
 using TimeScale.DAL.Interfaces;
@@ -20,14 +22,12 @@ namespace TimeScale.BLL.Services
             _assessmentRepository = assessmentRepository;
             _logger = logger;
         }
-        public async Task<ServiceResponse<IReadOnlyList<ResultDto>>> GetFilteredResultsAsync(ResultFilterDto filter, 
+        public async Task<IReadOnlyList<ResultDto>> GetFilteredResultsAsync(ResultFilterDto filter, 
             CancellationToken cancellationToken = default)
         {
             try
             {
                 var resultList = await _assessmentRepository.GetFilteredResultsAsync(filter, cancellationToken);
-
-                if (!resultList.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
 
                 var resultDtoList = new List<ResultDto>();
                 foreach (var entity in resultList)
@@ -35,23 +35,22 @@ namespace TimeScale.BLL.Services
                     resultDtoList.Add(entity.MapToDto());
                 }
 
-                return new ServiceResponse<IReadOnlyList<ResultDto>>(true, 200, "Results retrieved successfully.", resultDtoList);
+                return resultDtoList.AsReadOnly();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is DbUpdateException || ex is DbException)
             {
-                _logger.LogError(ex, "Failed to retrieve results.");
-                return new ServiceResponse<IReadOnlyList<ResultDto>>(false, 400, "Error. Could not fetch results.", new List<ResultDto>());
+                var details = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"Internal database error. Details: {details}.");
+                throw new DatabaseOperationException($"Internal database error.");
             }
         }
 
-        public async Task<ServiceResponse<IReadOnlyList<ValueDto>>> GetLastValuesAsync(string fileName, 
+        public async Task<IReadOnlyList<ValueDto>> GetLastValuesAsync(string fileName, 
             CancellationToken cancellationToken = default)
         {
             try
             {
                 var lastValues = await _assessmentRepository.GetLastValuesAsync(fileName, cancellationToken);
-
-                if (!lastValues.Any()) throw new Exception("Data not found."); //TODO: Create custom exceptions. Return Not Found
 
                 var valuesDtoList = new List<ValueDto>();
                 foreach (var entity in lastValues)
@@ -59,13 +58,13 @@ namespace TimeScale.BLL.Services
                     valuesDtoList.Add(entity.MapToDto());
                 }
 
-                return new ServiceResponse<IReadOnlyList<ValueDto>>(true, 200, "Values retrieved successfully.", valuesDtoList);
+                return valuesDtoList.AsReadOnly();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is DbUpdateException || ex is DbException)
             {
-                _logger.LogError(ex, "Failed to retrieve values.");
-
-                return new ServiceResponse<IReadOnlyList<ValueDto>>(false, 400, "Error. Could not fetch values.", new List<ValueDto>());
+                var details = ex.InnerException?.Message ?? ex.Message;
+                _logger.LogError(ex, $"Internal database error. Details: {details}.");
+                throw new DatabaseOperationException($"Internal database error.");
             }
         }
     }

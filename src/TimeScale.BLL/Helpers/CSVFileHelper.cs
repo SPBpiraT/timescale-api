@@ -24,11 +24,7 @@ namespace TimeScale.BLL.Helpers
 
             var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                Delimiter = ";",
-                MissingFieldFound = null,
-                HeaderValidated = null,
-                BadDataFound = c => throw new Exception($"Bad data.")
-
+                Delimiter = ";"
             };
 
             using var csvReader = new CsvReader(streamReader, csvConfiguration);
@@ -45,7 +41,7 @@ namespace TimeScale.BLL.Helpers
                 if (!validationResult.IsValid)
                 {
                     var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                    throw new Exception($"CSV validation error at row {rowNumber}: {errors}"); //TODO: Create custom exception
+                    throw new FluentValidation.ValidationException($"CSV data validation error at row {rowNumber}: {errors}. Filename: {fileName}.");
                 }
 
                 valueDto.FileName = fileName;
